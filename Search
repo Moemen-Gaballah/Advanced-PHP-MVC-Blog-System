@@ -1,0 +1,4 @@
+1- all_user_func_array()
+2- array_map
+3- ini_set('sessin.use_only_cookies', 1); // for security
+4- 
