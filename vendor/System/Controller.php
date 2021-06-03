@@ -8,8 +8,16 @@ abstract class Controller
 	*
 	* @var \System\Application
 	*/	
-
 	protected $app;
+
+
+	/**
+	* Errors container
+	*
+	* @var array
+	*/	
+	protected $errors = [];
+
 
 	/**
 	* Constructor
@@ -20,6 +28,20 @@ abstract class Controller
 	{
 		$this->app = $app;
 	}
+
+
+	/**
+	* Encode the given value to json
+	*
+	*
+	* @param mixed $data
+	* @return string
+	*/
+	public function json($data)
+	{
+		return json_encode($data);
+	}
+
 
 	/**
 	* Call share application objects dynamically

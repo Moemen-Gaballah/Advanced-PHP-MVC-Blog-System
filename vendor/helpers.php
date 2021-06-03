@@ -10,6 +10,14 @@ if(! function_exists('pre')) {
 	}
 }
 
+
+if(! function_exists('pred')) {
+	function pred($var){
+		pre($var);
+		die;
+	}
+}
+
 if(! function_exists('dd')) {
 	function dd($var){
 		var_dump($var);
@@ -50,6 +58,16 @@ if(! function_exists('assets')) {
 		$app = Application::getInstance();
 		
 		return $app->url->link('public/'. $path);
+	}
+}
+
+
+
+if(! function_exists('url')) {
+	function url($path){
+		$app = Application::getInstance();
+		
+		return $app->url->link($path);
 	}
 }
 

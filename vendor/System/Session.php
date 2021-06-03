@@ -38,7 +38,7 @@ class Session
 	*/
 	public function set($key, $value)
 	{
-		$SESSION[$key] = $value;
+		$_SESSION[$key] = $value;
 	}
 
 	/**
@@ -61,7 +61,7 @@ class Session
 
 	public function remove($key)
 	{
-		unset($_SESSION[$KEY]);
+		unset($_SESSION[$key]);
 	}
 
 	public function pull($key)

@@ -18,11 +18,25 @@ class Route
 	private $routes = [];
 
 	/**
+	* Current Route
+	*
+	* @var array
+	*/
+	private $current = [];
+	/**
 	* Not Found Url
 	*
 	* @var array
 	*/
 	private $notFound;
+
+
+	/**
+	*  Calls Container
+	*
+	* @var array
+	*/
+	private $calls = [];
 
 	/**
 	* Constructor
@@ -33,6 +47,17 @@ class Route
 	public function __construct(Application $app)
 	{
 		$this->app = $app;
+	}
+
+
+	/**
+	* Get All Routes
+	*
+	* @return array
+	*/
+	public function routes()
+	{
+		return $this->routes;
 	}
 
 	/**
@@ -68,28 +93,93 @@ class Route
 		$this->notFound = $url;
 	}
 
+
+	/**
+	* Call the given callback before calling the main controller
+	*
+	* @var callable $callable
+	* @return $this
+	*/
+	public function callFirst(callable $callable){
+		$this->calls['first'][] = $callable;
+		return $this;
+	}
+
+	/**
+	* Determine if there are any callbacks that will be called before
+	* calling the main controller
+	*
+	* @return bool
+	*/
+	public function hasCallsFirst()
+	{
+		return ! empty($this->calls['first']);
+	}
+
+
+	/**
+	* Call All callbacks that will be called before
+	* calling the main controller
+	*
+	* @return bool
+	*/
+	public function callFirstCalls()
+	{
+		foreach ($this->calls['first'] as $callback){
+			call_user_func($callback, $this->app);
+		}
+	}
+
+
 	/**
 	* Get Proper Route
 	*
 	* @return array
 	*/
-
 	public function getProperRoute()
 	{
 		foreach ($this->routes as $route) {
-			if ($this->isMatching($route['pattern'])){
+			if ($this->isMatching($route['pattern']) AND 
+				$this->isMatchingRequestMethod($route['method'])
+		){
 				$arguments = $this->getArgumentsFrom($route['pattern']);
 
 				//controller@method
 				list($controller, $method) = explode('@', $route['action']);
+
+				$this->current = $route;
 				return [$controller, $method, $arguments];
 			}
 		}
+
+		return $this->app->url->redirectTo($this->notFound);
+
+	}
+
+	/**
+	* Get Current Route url
+	*
+	* @return string
+	*/
+	public function getCurrentRouteUrl()
+	{
+		return $this->current['url'];		
 	}
 
 	private function isMatching($pattern)
-	{
+	{	
 		return preg_match($pattern, $this->app->request->url());
+	} 
+
+	/**
+	* Determine if the current request method equals the given route method
+	*
+	* @param string $route method
+	* @return bool
+	*/ 
+	private function isMatchingRequestMethod($routeMethod)
+	{
+		return $routeMethod == $this->app->request->method();
 	}
 
 	/**

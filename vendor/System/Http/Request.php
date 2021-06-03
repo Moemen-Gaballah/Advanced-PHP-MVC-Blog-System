@@ -7,6 +7,13 @@ class Request
 	private $baseUrl;
 
 	/**
+	* Uploaded files container
+	*
+	* @var array
+	*/
+	private $files = [];
+
+	/**
 	* Prepare url
 	*
 	* @return void
@@ -20,7 +27,11 @@ class Request
 			list($requestUri, $queryString) = explode('?', $requestUri);
 		}
 
-		$this->url = preg_replace('#^'.$script.'#', '', $requestUri);
+		$this->url = rtrim(preg_replace('#^'.$script.'#', '', $requestUri), '/');
+
+		if(! $this->url) {
+			$this->url = '/';
+		}
 
 		$this->baseUrl = $this->server('REQUEST_SCHEME') . '://' . $this->server('HTTP_HOST') . $script . '/';
 	}
@@ -45,6 +56,15 @@ class Request
 		return $this->server('REQUEST_METHOD');
 	}
 
+	/**
+	* Get the referer link 
+	*
+	* @return string
+	*/
+	public function referer()
+	{
+		return $this->server('HTTP_REFERER');
+	}
 	public function baseUrl()
 	{
 		return $this->baseUrl;
@@ -53,6 +73,25 @@ class Request
 	public function url()
 	{
 		return $this->url;
+	}
+
+	/**
+	* Get the upladed File objecy for the given input
+	*
+	* @param string $input
+	* @return \System\Http\UploadedFile
+	*/
+
+	public function file($input)
+	{
+		if(isset($this->files[$input])){
+			return $this->files[$input];
+		}
+
+		$UploadedFile = new UploadedFile($input);
+		$this->files[$input] = $UploadedFile;
+
+		return $this->files[$input];
 	}
 
 

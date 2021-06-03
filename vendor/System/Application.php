@@ -1,6 +1,8 @@
 <?php
 namespace System;
 
+use Closure;
+
 class Application
 {
 	/**
@@ -51,6 +53,9 @@ class Application
 		$this->file->call('App/index.php');
 		list($controller, $method, $arguments) = $this->route->getProperRoute();
 	
+		if($this->route->hasCallsFirst()) {
+			$this->route->callFirstCalls();
+		}
 		// $this->load->controller($controller);
 		$output = (string) $this->load->action($controller, $method, $arguments);
 
@@ -149,14 +154,15 @@ class Application
 		return [
 			'request' => 'System\\Http\\Request',
 			'response' => 'System\\Http\\Response',
-			'session' => 'System\\Session',
+			'Session' => 'System\\Session',
 			'route' => 'System\\Route',
 			'cookie' => 'System\\Cookie',
 			'load' => 'System\\Loader',
 			'html' => 'System\\Html',
 			'db' => 'System\\Database',
 			'view' => 'System\\View\\ViewFactory',
-			'url' => 'System\\Url'
+			'url' => 'System\\Url',
+			'validator' => 'System\\Validation',
 		];
 	}
 
@@ -169,7 +175,10 @@ class Application
 	*/
 
 	public function share($key, $value)
-	{
+	{	
+		if($value instanceof Closure) {
+			$value = call_user_func($value, $this);
+		}
 		$this->container[$key] = $value; 
 	}
 

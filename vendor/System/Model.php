@@ -76,4 +76,30 @@ abstract class Model
 	{
 		return $this->where('id = ?' , $id)->fetch($this->table);
 	}
+
+
+	/**
+	* Determine if the give value of the key key exists in table
+	*
+	* @param mixed $value
+	* @param string $key
+	* @ return
+	*/
+	public function exists($value, $key = 'id')
+	{	
+		return (bool) $this->select($key)->where($key .'=?', $value)->fetch($this->table);
+	}
+
+
+	/**
+	* Delete Record By Id
+	*
+	* @param int $id
+	* @param string $key
+	* @ return void
+	*/
+	public function delete($id)
+	{	
+		return $this->where('id = ?', $id)->delete($this->table);
+	}
 }

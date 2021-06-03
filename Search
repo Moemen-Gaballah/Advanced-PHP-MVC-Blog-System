@@ -1,4 +1,12 @@
 1- all_user_func_array()
 2- array_map
 3- ini_set('sessin.use_only_cookies', 1); // for security
-4- 
+4- mt_rand
+5-  // what do meaning stdClass;
+6- what is Closure Object
+7- serialize && unserialize // in jquery serialize => get data from form;
+8- sprintf() // function in php 
+9- call_user_func
+10- call_user_func_array
+11- ob 
+12- stdClass

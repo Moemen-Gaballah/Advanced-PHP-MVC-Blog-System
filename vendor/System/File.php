@@ -61,6 +61,12 @@ class File
 		return $this->to('vendor/'.$path); 
 	}
 
+
+	public function toPublic($path)
+	{
+		return $this->to('public/'.$path); 
+	}
+
 	public function to($path)
 	{
 		return $this->root . self::DS . str_replace(['/', '\\'], self::DS, $path); 
